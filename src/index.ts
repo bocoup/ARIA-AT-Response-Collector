@@ -2,6 +2,7 @@ import type QueryString from 'qs';
 import express from 'express';
 
 import createWorkOrder from './create-work-order';
+import createWorkOrderViaAPI from './create-work-order-via-api';
 import {rateLimitInfo} from './fetch-gh';
 
 const app = express();
@@ -33,7 +34,10 @@ app.get('/', (req, res) => {
 <body>
   ${result}
   <form method="post" action="/go">
-    <input type="submit" value="Go" />
+    <input type="submit" value="Go (with Git push)" />
+  </form>
+  <form method="post" action="/go-via-api">
+    <input type="submit" value="Go (with GitHub API)" />
   </form>
 <!--
 ${JSON.stringify(rateLimitInfo(), null, 2)}
@@ -46,6 +50,15 @@ ${JSON.stringify(rateLimitInfo(), null, 2)}
 app.post('/go', async (req, res) => {
   try {
     const workflowId = await createWorkOrder();
+    res.redirect(`/?result=success&id=${workflowId}`);
+  } catch (err) {
+    res.redirect(`/?result=failure&reason=${btoa(String(err))}`);
+  }
+});
+
+app.post('/go-via-api', async (req, res) => {
+  try {
+    const workflowId = await createWorkOrderViaAPI();
     res.redirect(`/?result=success&id=${workflowId}`);
   } catch (err) {
     res.redirect(`/?result=failure&reason=${btoa(String(err))}`);
