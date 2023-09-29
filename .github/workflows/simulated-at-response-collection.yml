@@ -1,6 +1,20 @@
 name: Simulated AT Response Collection
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      nonce:
+        description: |
+          Allow requesters to recognize the Workflow they trigger via the
+          GitHub API (it does not respond with the Workflow's ID)
+        required: true
+        type: string
 jobs:
+  self-identify:
+    runs-on: ubuntu-22.04
+    outputs:
+      nonce: ${{ inputs.nonce }}
+    steps:
+      - run: true
   simulate-at-response-collection:
     runs-on: ubuntu-22.04
     steps:
