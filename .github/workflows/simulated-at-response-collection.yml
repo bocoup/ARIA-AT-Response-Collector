@@ -11,10 +11,8 @@ on:
 jobs:
   self-identify:
     runs-on: ubuntu-22.04
-    outputs:
-      nonce: ${{ inputs.nonce }}
     steps:
-      - run: true
+      - run: echo ${{ inputs.nonce }}
   simulate-at-response-collection:
     runs-on: ubuntu-22.04
     steps:
